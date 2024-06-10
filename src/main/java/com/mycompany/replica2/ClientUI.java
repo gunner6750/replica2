@@ -50,10 +50,7 @@ public class ClientUI extends javax.swing.JFrame {
                 } catch (IOException ex) {
                     Logger.getLogger(ClientUI.class.getName()).log(Level.SEVERE, null, ex);
                     break;
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(ClientUI.class.getName()).log(Level.SEVERE, null, ex);
-                    break;
-                }
+                } 
             
             }
         }
@@ -68,10 +65,10 @@ public class ClientUI extends javax.swing.JFrame {
     private void initComponents() {
 
         windowWrite = new javax.swing.JFrame();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        sth = new javax.swing.JScrollPane();
+        fileContent = new javax.swing.JTextArea();
         writeFile = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
+        fileName = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
@@ -82,9 +79,9 @@ public class ClientUI extends javax.swing.JFrame {
         readButton = new javax.swing.JButton();
         newButton = new javax.swing.JButton();
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane3.setViewportView(jTextArea2);
+        fileContent.setColumns(20);
+        fileContent.setRows(5);
+        sth.setViewportView(fileContent);
 
         writeFile.setText("Write");
         writeFile.addActionListener(new java.awt.event.ActionListener() {
@@ -93,7 +90,7 @@ public class ClientUI extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setText("nameOfFile");
+        fileName.setText("nameOfFile");
 
         javax.swing.GroupLayout windowWriteLayout = new javax.swing.GroupLayout(windowWrite.getContentPane());
         windowWrite.getContentPane().setLayout(windowWriteLayout);
@@ -101,21 +98,23 @@ public class ClientUI extends javax.swing.JFrame {
             windowWriteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(windowWriteLayout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addGroup(windowWriteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(windowWriteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(writeFile)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(windowWriteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(sth, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(windowWriteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(windowWriteLayout.createSequentialGroup()
+                            .addGap(296, 296, 296)
+                            .addComponent(writeFile))
+                        .addComponent(fileName, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(17, Short.MAX_VALUE))
         );
         windowWriteLayout.setVerticalGroup(
             windowWriteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(windowWriteLayout.createSequentialGroup()
                 .addContainerGap(9, Short.MAX_VALUE)
-                .addComponent(jLabel2)
+                .addComponent(fileName)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(sth, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
                 .addComponent(writeFile)
                 .addContainerGap())
         );
@@ -227,11 +226,8 @@ public class ClientUI extends javax.swing.JFrame {
 
     private void writeFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_writeFileActionPerformed
         // TODO add your handling code here:
-        try{
-        client.writeFile(fileName.getText(), fileContent.getText());
-        } catch (IOException ex) {
-            Logger.getLogger(writeFilePanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        client.sendWriteRequest(fileName.getText(), fileContent.getText());
+       
     }//GEN-LAST:event_writeFileActionPerformed
 
     /**
@@ -264,23 +260,23 @@ public class ClientUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ClientUI().setVisible(true);
+                new ClientUI("name").setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel clientName;
+    private javax.swing.JTextArea fileContent;
+    private javax.swing.JLabel fileName;
     private javax.swing.JList<String> item;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
     private javax.swing.JScrollPane listFile;
     private javax.swing.JButton newButton;
     private javax.swing.JButton readButton;
+    private javax.swing.JScrollPane sth;
     private javax.swing.JFrame windowWrite;
     private javax.swing.JButton writeButton;
     private javax.swing.JButton writeFile;

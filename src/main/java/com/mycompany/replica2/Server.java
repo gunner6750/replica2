@@ -18,6 +18,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -102,6 +103,15 @@ public class Server {
                 data=slave.getFileContent(fileName);
         }
         return data;
+    }
+    public Vector<Integer> getIdList()
+    {
+        Vector<Integer> v = new Vector<Integer>();
+        for(int i=0; i<=slaves.size(); i++)
+        {
+            v.add(slaves.get(i).getId());
+        }
+        return v;
     }
     public void createSlave(){
         Slave slave =new Slave(slaves.size());
