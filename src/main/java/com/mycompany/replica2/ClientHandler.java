@@ -76,7 +76,17 @@ public class ClientHandler implements Runnable {
         this.out.writeObject(wR);
         this.out.flush();
     }
-
+    public void sendFileList(){
+        String fileListString="";
+        for(int i=0;i<files.size();i++){
+            fileListString+=files.get(i)+" ";
+        }
+        try {
+            send(new Message(fileListString,"FileList"));
+        } catch (IOException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     public void broadcast(Message wR) {
         for (ClientHandler clientHandler : clientHandlers) {
             try {
@@ -113,7 +123,9 @@ public class ClientHandler implements Runnable {
 
         } else {
             switch (wR.getMethod()) {
-                
+                case "FileList":
+                    sendFileList();
+                    break;
                 case "Post":
                     postFile(wR);
                     break;

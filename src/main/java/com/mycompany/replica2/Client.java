@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,11 +19,12 @@ import java.util.logging.Logger;
  * @author ACER
  */
 public class Client {
+    public static ArrayList<String> files=new ArrayList<>();
     public Socket socket;
     public ObjectOutputStream out = null;
     public ObjectInputStream in = null;
     public String name;
-
+    public String fileContent;
     public Client(Socket socket, String name) throws IOException {
         this.socket = socket;
         this.name = name;
@@ -30,19 +33,24 @@ public class Client {
             System.out.println("3");
             in = new ObjectInputStream(socket.getInputStream());
             send(new Message(this.name, "Login"));
+            sendFileListRequest();
     }
     public void requestHandler(Message wR) throws IOException {
         if (null == wR.getMethod()) {
 
         } else {
             switch (wR.getMethod()) {
+                case "FileList":
+                    receiveFileListRequest(wR);
+                    break;
                 case "Read":
-
+                    receiveReadRequest(wR);
                     break;
                 case "Write":
-                    
+                    receiveWriteRequest(wR);
                     break;
                 case "Post":
+                    receivePostRequest(wR);
                     break;
                 default:
 
@@ -74,12 +82,18 @@ public class Client {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public void receivePostRequest(Message wR){
+        
+    }
     public void sendReadRequest(String fileName){
         try {
             send(new Message(fileName,"read"));
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    public void receiveReadRequest(Message wR){
+        fileContent=wR.getMessage();
     }
     public void sendWriteRequest(String fileName,String content){
         try {
@@ -88,6 +102,20 @@ public class Client {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public void receiveWriteRequest(Message wR){
+        
+    }
+    private void sendFileListRequest(){
+        try {
+            send(new Message("","FileList"));
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void receiveFileListRequest(Message wR){
+        this.files= new ArrayList<String>(Arrays.asList(wR.getMessage().split(" ")));
+    }
+    
 //    public String receiveWriteRequest(Message wR){
 //        wR
 //    }
