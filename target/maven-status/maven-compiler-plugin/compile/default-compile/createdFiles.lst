@@ -15,6 +15,7 @@ com\mycompany\replica2\ServerUI$3.class
 com\mycompany\replica2\Message.class
 com\mycompany\replica2\Server.class
 com\mycompany\replica2\ClientHandler.class
+com\mycompany\replica2\ClientUI$7.class
 com\mycompany\replica2\ClientUI$4.class
 com\mycompany\replica2\ServerUI$1.class
 com\mycompany\replica2\ClientUI$3.class
