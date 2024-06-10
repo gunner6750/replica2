@@ -4,6 +4,10 @@
  */
 package com.mycompany.replica2;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -15,10 +19,45 @@ public class ClientUI extends javax.swing.JFrame {
     /**
      * Creates new form ClientUI
      */
-    public ClientUI() {
+//    public ClientUI() {
+//        initComponents();
+//    }
+    private Client client;
+    public ClientUI(String name) {
         initComponents();
+        try {
+            
+            int portNumber = 8089;
+            
+            Socket socket = new Socket("localhost", portNumber);
+            
+            this.client = new Client(socket, name);
+            
+            clientName.setText(name);
+            sStart s=new sStart();
+            s.start();
+        } catch (IOException ex) {
+            Logger.getLogger(ClientUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-
+    public class sStart extends Thread{
+        private Message m =new Message();
+        public void run(){
+            while(true){
+                try {
+                    m=client.receive();
+                    client.requestHandler(m);
+                } catch (IOException ex) {
+                    Logger.getLogger(ClientUI.class.getName()).log(Level.SEVERE, null, ex);
+                    break;
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(ClientUI.class.getName()).log(Level.SEVERE, null, ex);
+                    break;
+                }
+            
+            }
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -31,7 +70,7 @@ public class ClientUI extends javax.swing.JFrame {
         windowWrite = new javax.swing.JFrame();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
-        jButton4 = new javax.swing.JButton();
+        writeFile = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -47,10 +86,10 @@ public class ClientUI extends javax.swing.JFrame {
         jTextArea2.setRows(5);
         jScrollPane3.setViewportView(jTextArea2);
 
-        jButton4.setText("Write");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        writeFile.setText("Write");
+        writeFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                writeFileActionPerformed(evt);
             }
         });
 
@@ -64,7 +103,7 @@ public class ClientUI extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addGroup(windowWriteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(windowWriteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jButton4)
+                        .addComponent(writeFile)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(17, Short.MAX_VALUE))
@@ -77,7 +116,7 @@ public class ClientUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton4)
+                .addComponent(writeFile)
                 .addContainerGap())
         );
 
@@ -186,9 +225,14 @@ public class ClientUI extends javax.swing.JFrame {
          // TODO add your handling code here:
     }//GEN-LAST:event_writeButtonMouseClicked
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void writeFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_writeFileActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+        try{
+        client.writeFile(fileName.getText(), fileContent.getText());
+        } catch (IOException ex) {
+            Logger.getLogger(writeFilePanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_writeFileActionPerformed
 
     /**
      * @param args the command line arguments
@@ -228,7 +272,6 @@ public class ClientUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel clientName;
     private javax.swing.JList<String> item;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -240,5 +283,6 @@ public class ClientUI extends javax.swing.JFrame {
     private javax.swing.JButton readButton;
     private javax.swing.JFrame windowWrite;
     private javax.swing.JButton writeButton;
+    private javax.swing.JButton writeFile;
     // End of variables declaration//GEN-END:variables
 }
