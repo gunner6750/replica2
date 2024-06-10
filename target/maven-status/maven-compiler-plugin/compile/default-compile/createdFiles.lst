@@ -1,0 +1,6 @@
+com\mycompany\replica2\ClientHandler.class
+com\mycompany\replica2\Client.class
+com\mycompany\replica2\Message.class
+com\mycompany\replica2\Replica2.class
+com\mycompany\replica2\Server.class
+com\mycompany\replica2\Slave.class
