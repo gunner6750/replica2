@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  */
 public class Replica2 {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException {
         System.out.println("Hello World!");
             // Create a file object 
 //            Slave slave=new Slave("2");

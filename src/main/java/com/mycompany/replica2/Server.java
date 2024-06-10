@@ -59,7 +59,7 @@ public class Server {
     /**
      *
      */
-    public void serverStart() {
+    public void serverStart() throws ClassNotFoundException {
         try {
             System.out.println("Server is started at port "+ serverSocket.getLocalPort());
             while (!serverSocket.isClosed()) {
@@ -114,11 +114,11 @@ public class Server {
         slaves.get(id).setAvailable(true);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException {
             ServerSocket serverSocket=null;
 
         try {
-            serverSocket = new ServerSocket(8089);
+            serverSocket = new ServerSocket(7000);
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }

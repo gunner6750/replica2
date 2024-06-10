@@ -100,7 +100,7 @@ public class Client {
     public static void main(String[] args) {
             Socket socket=null;
         try {
-            socket = new Socket("localhost", 8089);
+            socket = new Socket("localhost", 7000);
             
         } catch (IOException ex) {
             Logger.getLogger(Replica2.class.getName()).log(Level.SEVERE, null, ex);

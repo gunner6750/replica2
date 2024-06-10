@@ -42,7 +42,7 @@ public class ClientHandler implements Runnable {
     private String path = currentDirFile.getAbsolutePath()+"/master";
     private String dataPath = "master/data/";
 
-    public ClientHandler(Socket socket) {
+    public ClientHandler(Socket socket) throws IOException, ClassNotFoundException {
 
         this.socket = socket;
         System.out.println("client is running at port"+socket.getPort());
@@ -61,28 +61,20 @@ public class ClientHandler implements Runnable {
         
         clientHandlers.add(this);
 
-        try {
             this.name = receive().getMessage();
-        } catch (IOException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.println("new client:" + name);
+        System.out.println(this.name);
     }
 
-    public Message receive() throws IOException, ClassNotFoundException {
+    public Message receive() throws IOException {
         
         Message wR = new Message();
-
-
-
+        try {
             wR = (Message) in.readObject();
-
-            System.out.println("the message is:"+wR.getMessage());
-
-            
-
+        }
+        catch (ClassNotFoundException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println("the message is:"+wR.getMessage());
         return wR;
     }
 
@@ -109,11 +101,7 @@ public class ClientHandler implements Runnable {
         Message wR = new Message();
         while (true) {
             try {
-                try {
-                    wR = receive();
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                wR = receive();
                 requestHandler(wR);
             } catch (IOException ex) {
                 System.out.println("error here");
