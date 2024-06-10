@@ -8,6 +8,7 @@ package com.mycompany.replica2;
  *
  * @author ACER
  */
+import static com.mycompany.replica2.Server.files;
 import static com.mycompany.replica2.Server.slaves;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -112,6 +113,7 @@ public class ClientHandler implements Runnable {
 
         } else {
             switch (wR.getMethod()) {
+                
                 case "Post":
                     postFile(wR);
                     break;
@@ -166,8 +168,33 @@ public class ClientHandler implements Runnable {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public void addToFileList(String fileName){
+        for (int i=0;i<files.size();i++){
+            if (fileName.equals(files.get(i))) return;
+        }
+        try {
 
+            // Open given file in append mode by creating an
+            // object of BufferedWriter class
+            BufferedWriter out1 = new BufferedWriter(new FileWriter(path+"/fileList.txt", true));
+//            if (content.startsWith("\n")){
+//                System.err.println("hello");
+//            }
+            // Writing on output stream
+            
+            out1.write(fileName+".txt");
+            // Closing the connection
+            out1.close();
+        } // Catch block to handle the exceptions
+        catch (IOException e) {
+
+            // Display message when exception occ
+            
+            System.out.println("exception occurred" + e);
+        }
+    }
     public void postFile(Message wR) {
+        
         String content = wR.getMessage();
         String fileName = wR.getFilename();
         List<Integer> chosen = new ArrayList<Integer>();

@@ -37,19 +37,32 @@ public class ServerUI extends javax.swing.JFrame {
         initComponents();
 //        Vector<Integer> vector = new Vector<Integer>(server.slaves.getId());
 //        listSlaves.setListData(server.getIdList());
-        DefaultListModel listModel = new DefaultListModel();
-        for (int i = 0; i < server.slaves.size(); i++)
-        {
-            listModel.addElement(server.slaves.get(i));
-        }
-        listSlaves.setModel(listModel);
+
         sStart s = new sStart();
         s.start();
+        updateFilesList();
+        updateSlavesList();
     }
     public class sStart extends Thread {
     public void run(){
         server.serverStart();
         }
+    }
+    public void updateFilesList(){
+        DefaultListModel listModel = new DefaultListModel();
+        for (int i = 0; i < server.files.size(); i++)
+        {
+            listModel.addElement(server.files.get(i));
+        }
+        listFiles.setModel(listModel); 
+    }
+    public void updateSlavesList(){
+        DefaultListModel listModel = new DefaultListModel();
+        for (int i = 0; i < server.slaves.size(); i++)
+        {
+            listModel.addElement("slave"+server.slaves.get(i).getId());
+        }
+        listSlaves.setModel(listModel);        
     }
 
     /**
@@ -63,7 +76,7 @@ public class ServerUI extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        listFiles = new javax.swing.JList<>();
         jScrollPane2 = new javax.swing.JScrollPane();
         listSlaves = new javax.swing.JList<>();
         jLabel2 = new javax.swing.JLabel();
@@ -91,12 +104,12 @@ public class ServerUI extends javax.swing.JFrame {
 
         jLabel1.setText("Server");
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+        listFiles.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(listFiles);
 
         listSlaves.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -333,7 +346,6 @@ public class ServerUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JList<String> jList3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -341,6 +353,7 @@ public class ServerUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JLabel lastUpdate;
     private javax.swing.JList<String> listFile;
+    private javax.swing.JList<String> listFiles;
     private javax.swing.JList<String> listSlaves;
     private javax.swing.JLabel location;
     private javax.swing.JLabel numberOfFiles;

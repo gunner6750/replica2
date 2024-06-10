@@ -9,8 +9,10 @@ package com.mycompany.replica2;
  * @author ACER
  */
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -24,6 +26,7 @@ import java.util.logging.Logger;
 
 public class Server {
     public static ArrayList<Slave> slaves=new ArrayList<>();
+    public static ArrayList<String> files=new ArrayList<>();
     File currentDirFile = new File(".");
     
     private String path = currentDirFile.getAbsolutePath()+"/master";
@@ -40,6 +43,35 @@ public class Server {
         new File(this.dataPath).mkdirs();
         this.dataPath = this.dataPath + "/";
         create10Slaves();
+        try {
+            files=fileArrayList();
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    private ArrayList fileArrayList() throws FileNotFoundException, IOException{
+        ArrayList<String> listOfStrings = new ArrayList<String>();
+        // load data from file
+        BufferedReader bf = new BufferedReader(
+            new FileReader(path+"/fileList.txt"));
+       
+        // read entire line as string
+        String line = bf.readLine();
+       
+        // checking for end of file
+        while (line != null) {
+            listOfStrings.add(line);
+            line = bf.readLine();
+        }
+       
+        // closing bufferreader object
+        bf.close();
+       
+        // storing the data in arraylist to array
+        String[] array
+            = listOfStrings.toArray(new String[0]);
+       
+        return listOfStrings;
     }
     public void create10Slaves(){
         for(int i=1;i<=10;i++){
