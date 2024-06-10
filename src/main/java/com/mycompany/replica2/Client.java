@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,21 +22,14 @@ public class Client {
     public ObjectInputStream in = null;
     public String name;
 
-    public Client(Socket socket, String name) {
+    public Client(Socket socket, String name) throws IOException {
         this.socket = socket;
         this.name = name;
-            try {
+
             out = new ObjectOutputStream(socket.getOutputStream());
             System.out.println("3");
             in = new ObjectInputStream(socket.getInputStream());
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            this.send(new Message(this.name, "Login"));
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            send(new Message(this.name, "Login"));
     }
     public void requestHandler(Message wR) throws IOException {
         if (null == wR.getMethod()) {
@@ -56,9 +50,15 @@ public class Client {
             }
         }
     }
-    public Message receive() throws IOException, ClassNotFoundException {
+    public Message receive() {
         Message wR = new Message();
-        wR = (Message) in.readObject();
+        try {
+            wR = (Message) in.readObject();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
         System.out.println("message received");
         return wR;
     }
@@ -100,12 +100,19 @@ public class Client {
     public static void main(String[] args) {
             Socket socket=null;
         try {
-            socket = new Socket("localhost", 7000);
+            socket = new Socket("localhost", 8088);
             
         } catch (IOException ex) {
             Logger.getLogger(Replica2.class.getName()).log(Level.SEVERE, null, ex);
         }
-    Client client =new Client(socket,"Khoa");
-//    client.sendPostRequest("abc", "bac");
+        try {
+            Client client =new Client(socket,"Khoa");
+            //client.sendPostRequest("abc", "bac");
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+        
     }
 }

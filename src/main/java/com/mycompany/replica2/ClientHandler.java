@@ -39,42 +39,35 @@ public class ClientHandler implements Runnable {
     private ObjectInputStream in = null;
     private String name;
     File currentDirFile = new File(".");
-    private String path = currentDirFile.getAbsolutePath()+"/master";
+    private String path = currentDirFile.getAbsolutePath() + "/master";
     private String dataPath = "master/data/";
 
-    public ClientHandler(Socket socket) throws IOException, ClassNotFoundException {
+    public ClientHandler(Socket socket) throws IOException {
 
         this.socket = socket;
-        System.out.println("client is running at port"+socket.getPort());
-        try {
-            this.out = new ObjectOutputStream(socket.getOutputStream());
-            System.out.println("out socket done");
-        } catch (IOException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            this.in = new ObjectInputStream(socket.getInputStream());
-            System.out.println("in socket done");
-        } catch (IOException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        clientHandlers.add(this);
+        System.out.println("client is running at port" + socket.getPort());
 
-            this.name = receive().getMessage();
-        System.out.println(this.name);
+        this.out = new ObjectOutputStream(socket.getOutputStream());
+
+        System.out.println("out socket done....");
+
+        this.in = new ObjectInputStream(socket.getInputStream());
+
+        System.out.println("in socket done");
+
+        boolean add = clientHandlers.add(this);
     }
 
-    public Message receive() throws IOException {
-        
+    private Message receive() throws IOException {
+
         Message wR = new Message();
+
         try {
             wR = (Message) in.readObject();
+        } catch (ClassNotFoundException ex) {
+//            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-        catch (ClassNotFoundException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.println("the message is:"+wR.getMessage());
+        System.out.println("the message is:" + wR.getMessage());
         return wR;
     }
 
@@ -101,13 +94,13 @@ public class ClientHandler implements Runnable {
         Message wR = new Message();
         while (true) {
             try {
+                System.out.println("hej");
                 wR = receive();
                 requestHandler(wR);
             } catch (IOException ex) {
-                System.out.println("error here");
-                this.closeAll();
-                
+
                 Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+                this.closeAll();
                 break;
             }
         }
@@ -120,6 +113,7 @@ public class ClientHandler implements Runnable {
         } else {
             switch (wR.getMethod()) {
                 case "Post":
+                    postFile(wR);
                     break;
                 case "Read":
                     readFile(wR);
@@ -129,7 +123,8 @@ public class ClientHandler implements Runnable {
                     System.out.println(wR.getMessage());
                     break;
                 case "Login":
-                    this.name=wR.getMessage();
+                    this.name = wR.getMessage();
+                    System.out.println("name is" + this.name);
                     break;
                 default:
                     break;
@@ -139,62 +134,65 @@ public class ClientHandler implements Runnable {
     }
 
     public void readFile(Message wR) {
-        String fileName=wR.getFilename();
-                String data = null;
+        String fileName = wR.getFilename();
+        String data = null;
         for (Slave slave : slaves) {
-            if(slave.isContainFile(fileName))
-                data=slave.getFileContent(fileName);
+            if (slave.isContainFile(fileName)) {
+                data = slave.getFileContent(fileName); 
+                break;
+            }
         }
         try {
-            send(new Message(wR.getFilename(),data,"Read"));
+            send(new Message(wR.getFilename(), data, "Read"));
         } catch (IOException ex) {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public void writeFile(Message wR) {
-        String message="failed";
-        String fileName=wR.getFilename();
-        String data=wR.getMessage();
+        String message = "failed";
+        String fileName = wR.getFilename();
+        String data = wR.getMessage();
         for (Slave slave : slaves) {
-            if(slave.isContainFile(fileName)){
+            if (slave.isContainFile(fileName)) {
                 slave.writeFile(fileName, data);
-                message="successful";
+                message = "successful";
             }
         }
-        
-        
+
         try {
-            send(new Message(message,"Write"));
+            send(new Message(message, "Write"));
         } catch (IOException ex) {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public void postFile(Message wR){
-        String content=wR.getMessage();
-        String fileName=wR.getFilename();
+
+    public void postFile(Message wR) {
+        String content = wR.getMessage();
+        String fileName = wR.getFilename();
         List<Integer> chosen = new ArrayList<Integer>();
         chosen.add(1);
         chosen.add(1);
         chosen.add(1);
         chosen.add(1);
         chosen.add(1);
-        for(int i=0;i<slaves.size()-5;i++){
+        for (int i = 0; i < slaves.size() - 5; i++) {
             chosen.add(0);
         }
         Collections.shuffle(chosen);
-        for (int i=0;i<slaves.size();i++){
-            if(chosen.get(i)==1 && slaves.get(i).isAvailable()){
+        for (int i = 0; i < slaves.size(); i++) {
+            if (chosen.get(i) == 1 && slaves.get(i).isAvailable()) {
                 slaves.get(i).createFile(fileName);
                 slaves.get(i).writeFile(fileName, content);
             }
         }
         try {
-            send(new Message("Successful","Post"));
+            send(new Message("Successful", "Post"));
         } catch (IOException ex) {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     public void appendStrToFile(String fileName, String str) {
 
     }
