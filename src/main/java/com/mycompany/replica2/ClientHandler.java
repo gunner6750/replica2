@@ -229,10 +229,19 @@ public class ClientHandler implements Runnable {
                 slaves.get(i).writeFile(fileName, content);
             }
         }
+        files.add(fileName+".txt");
+        addToFileList(fileName+".txt");
         try {
             send(new Message("Successful", "Post"));
+            
         } catch (IOException ex) {
             Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        for (ClientHandler clientHandler : clientHandlers) {
+
+                System.out.println("broadcasting");
+                clientHandler.sendFileList();
         }
     }
 
