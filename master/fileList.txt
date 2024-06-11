@@ -4,3 +4,5 @@ test.txt
 tit.txt
 name.txt
 name1.txt
+file.txt
+newfile.txt

@@ -198,7 +198,7 @@ public class ClientHandler implements Runnable {
 //            }
             // Writing on output stream
             
-            out1.write("/n"+fileName+".txt");
+            out1.write("\n"+fileName+".txt");
             // Closing the connection
             out1.close();
         } // Catch block to handle the exceptions
