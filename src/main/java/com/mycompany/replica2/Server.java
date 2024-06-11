@@ -27,8 +27,9 @@ import java.util.logging.Logger;
 public class Server {
     public static ArrayList<Slave> slaves=new ArrayList<>();
     public static ArrayList<String> files=new ArrayList<>();
+    public static ArrayList<Slave> availableSlave = new ArrayList<>();
     File currentDirFile = new File(".");
-    
+    private String fileContent;
     private String path = currentDirFile.getAbsolutePath()+"/master";
     //private String path = "C:\\Users\\ACER\\OneDrive\\Documents\\NetBeansProjects\\Replica\\replica\\master";
     private String dataPath;
@@ -49,6 +50,7 @@ public class Server {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
     private ArrayList fileArrayList() throws FileNotFoundException, IOException{
         ArrayList<String> listOfStrings = new ArrayList<String>();
         // load data from file
@@ -77,6 +79,18 @@ public class Server {
         for(int i=1;i<=10;i++){
             createSlave();
         }
+    }
+    public ArrayList<String> getFileListOfSlave(int slaveId){
+        return slaves.get(slaveId).getFileList();
+    }
+    public ArrayList<Slave> getEnabledSlaves(){
+        ArrayList<Slave> s = new ArrayList<Slave>();
+        for (Slave slave : slaves) {
+            if(slave.isAvailable()){
+                s.add(slave);
+            }
+        }
+        return s;
     }
     public void setServerSocket(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
@@ -129,21 +143,29 @@ public class Server {
     }
 
     public String readFile(String fileName) throws FileNotFoundException {
+        fileName=fileName.substring(0, fileName.lastIndexOf('.'));
         String data = null;
         for (Slave slave : slaves) {
-            if(slave.isContainFile(fileName))
+            if(slave.isContainFile(fileName) && slave.isAvailable())
                 data=slave.getFileContent(fileName);
         }
         return data;
     }
-    public Vector<Integer> getIdList()
-    {
-        Vector<Integer> v = new Vector<Integer>();
-        for(int i=0; i<=slaves.size(); i++)
-        {
-            v.add(slaves.get(i).getId());
+    public ArrayList<String> slavesContainFile(String fileName){
+        ArrayList<String> s =new ArrayList<>();
+        for (Slave slave : slaves){
+            if(slave.isContainFile(fileName)){
+                s.add("Slave"+slave.getId());
+                System.out.println("slave"+slave.getId());
+            }
         }
-        return v;
+        return s;
+    }
+    public boolean isAvailable(int slaveId){
+        return slaves.get(slaveId).isAvailable();
+    }
+    public int getNumberOfFileOfSlave(int slaveId){
+        return slaves.get(slaveId).getNumberOfFiles();
     }
     public void createSlave(){
         Slave slave =new Slave(slaves.size());
@@ -155,6 +177,7 @@ public class Server {
     public void enableSlave(int id){
         slaves.get(id).setAvailable(true);
     }
+
 
     public static void main(String[] args){
             ServerSocket serverSocket=null;

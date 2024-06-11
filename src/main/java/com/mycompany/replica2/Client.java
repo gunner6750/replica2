@@ -87,7 +87,7 @@ public class Client {
     }
     public void sendReadRequest(String fileName){
         try {
-            send(new Message(fileName,"read"));
+            send(new Message(fileName,"","Read"));
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }

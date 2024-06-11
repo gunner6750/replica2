@@ -148,7 +148,10 @@ public class ClientHandler implements Runnable {
     }
 
     public void readFile(Message wR) {
+        
         String fileName = wR.getFilename();
+        fileName=fileName.substring(0, fileName.lastIndexOf('.'));
+        System.out.println(fileName);
         String data = null;
         for (Slave slave : slaves) {
             if (slave.isContainFile(fileName)) {
@@ -156,6 +159,7 @@ public class ClientHandler implements Runnable {
                 break;
             }
         }
+        System.out.println(data);
         try {
             send(new Message(wR.getFilename(), data, "Read"));
         } catch (IOException ex) {

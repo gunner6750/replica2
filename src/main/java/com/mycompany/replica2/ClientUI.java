@@ -180,10 +180,10 @@ public class ClientUI extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(nameOfFile, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(clientName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)))
+                        .addComponent(clientName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(writeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -246,13 +246,25 @@ public class ClientUI extends javax.swing.JFrame {
         item.setModel(listModel); 
     }
     private void writeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_writeButtonActionPerformed
-           // TODO add your handling code here:
+
+        // TODO add your handling code here:
+        String fileName1=item.getSelectedValue();
+        fileName.setText(fileName1);
         windowWrite.setVisible(true);
         windowWrite.setSize(400, 400);
     }//GEN-LAST:event_writeButtonActionPerformed
 
     private void readButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_readButtonActionPerformed
         // TODO add your handling code here:
+        String fileName1=item.getSelectedValue();
+        client.sendReadRequest(fileName1);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ClientUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        content.setText(client.fileContent);
+        nameOfFile.setText(fileName1);
     }//GEN-LAST:event_readButtonActionPerformed
 
     private void writeButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_writeButtonMouseClicked
@@ -261,13 +273,18 @@ public class ClientUI extends javax.swing.JFrame {
 
     private void writeFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_writeFileActionPerformed
         // TODO add your handling code here:
+        
         client.sendWriteRequest(fileName.getText(), fileContent.getText());
        
     }//GEN-LAST:event_writeFileActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        item.clearSelection();
+        content.setText("");
+        nameOfFile.setText("nameOfFile");
         updateFilesList();
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void itemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemMouseClicked

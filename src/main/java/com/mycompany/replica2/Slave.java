@@ -26,6 +26,7 @@ public class Slave {
     private String dataPath;
     private String path;
     private boolean available=true;
+    private int numberOfFiles;
     public Slave(int id) {
         this.id = id;
         this.path=currentDirFile.getAbsolutePath()+"/slave_"+this.id;
@@ -41,6 +42,7 @@ public class Slave {
             for (int i = 0; i < files.length; i++) { 
                 //System.out.println(files[i]);
                 fileList.add(files[i]);
+                numberOfFiles++;
             } 
         //boolean add = slaves.add(this);
     }
@@ -70,9 +72,14 @@ public class Slave {
             file.createNewFile();
             fileList.add(fileName+".txt");
             System.out.println("file created at slave"+getId());
+            numberOfFiles++;
         } catch (IOException ex) {
             Logger.getLogger(Slave.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public int getNumberOfFiles() {
+        return numberOfFiles;
     }
     public void writeFile(String fileName,String content){
                 try {
@@ -95,6 +102,10 @@ public class Slave {
             
             System.out.println("exception occurred" + e);
         }
+    }
+
+    public ArrayList<String> getFileList() {
+        return fileList;
     }
     public String getFileContent(String fileName){
         String data = null;
