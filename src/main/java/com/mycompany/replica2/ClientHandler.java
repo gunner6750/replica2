@@ -186,7 +186,7 @@ public class ClientHandler implements Runnable {
     }
     public void addToFileList(String fileName){
         for (int i=0;i<files.size();i++){
-            if (fileName.equals(files.get(i))) return;
+            if ((fileName+".txt").equals(files.get(i))) return;
         }
         try {
 
@@ -198,7 +198,7 @@ public class ClientHandler implements Runnable {
 //            }
             // Writing on output stream
             
-            out1.write(fileName+".txt");
+            out1.write("/n"+fileName+".txt");
             // Closing the connection
             out1.close();
         } // Catch block to handle the exceptions
@@ -229,8 +229,9 @@ public class ClientHandler implements Runnable {
                 slaves.get(i).writeFile(fileName, content);
             }
         }
+        addToFileList(fileName);
         files.add(fileName+".txt");
-        addToFileList(fileName+".txt");
+        
         try {
             send(new Message("Successful", "Post"));
             
