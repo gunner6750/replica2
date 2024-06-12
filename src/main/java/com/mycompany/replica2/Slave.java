@@ -81,20 +81,28 @@ public class Slave {
     public int getNumberOfFiles() {
         return numberOfFiles;
     }
+    public void deleteFile(String fileName){
+        File myObj = new File(dataPath+fileName+".txt");
+        if (myObj.delete()) { 
+            System.out.println("Deleted the file: " + myObj.getName());
+          } else {
+            System.out.println("Failed to delete the file.");
+    }
+    }
     public void writeFile(String fileName,String content){
                 try {
 
             // Open given file in append mode by creating an
             // object of BufferedWriter class
-            BufferedWriter out1 = new BufferedWriter(new FileWriter(dataPath+fileName+".txt", true));
-//            if (content.startsWith("\n")){
-//                System.err.println("hello");
-//            }
-            // Writing on output stream
-            System.out.println("file writed at slave"+getId());
-            out1.write(content);
-            // Closing the connection
-            out1.close();
+                    BufferedWriter out1 = new BufferedWriter(new FileWriter(dataPath+fileName+".txt", true));
+        //            if (content.startsWith("\n")){
+        //                System.err.println("hello");
+        //            }
+                    // Writing on output stream
+                    System.out.println("file writed at slave"+getId());
+                    out1.write(content);
+                    // Closing the connection
+                    out1.close();
         } // Catch block to handle the exceptions
         catch (IOException e) {
 

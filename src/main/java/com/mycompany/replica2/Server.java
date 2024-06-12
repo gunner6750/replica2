@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Server {
+    public static int numberOfReplicas;
     public static ArrayList<Slave> slaves=new ArrayList<>();
     public static ArrayList<String> files=new ArrayList<>();
     public static ArrayList<Slave> availableSlave = new ArrayList<>();
@@ -142,20 +143,19 @@ public class Server {
         myObj.createNewFile();
     }
 
-    public String readFile(String fileName) throws FileNotFoundException {
+    public String readFile(String fileName,int slaveId) throws FileNotFoundException {
         fileName=fileName.substring(0, fileName.lastIndexOf('.'));
         String data = null;
-        for (Slave slave : slaves) {
-            if(slave.isContainFile(fileName) && slave.isAvailable())
-                data=slave.getFileContent(fileName);
+        if (slaves.get(slaveId).isAvailable()){
+        data=slaves.get(slaveId).getFileContent(fileName);
         }
         return data;
     }
-    public ArrayList<String> slavesContainFile(String fileName){
-        ArrayList<String> s =new ArrayList<>();
+    public ArrayList<Slave> slavesContainFile(String fileName){
+        ArrayList<Slave> s =new ArrayList<>();
         for (Slave slave : slaves){
             if(slave.isContainFile(fileName)){
-                s.add("Slave"+slave.getId());
+                s.add(slave);
                 System.out.println("slave"+slave.getId());
             }
         }
@@ -171,11 +171,26 @@ public class Server {
         Slave slave =new Slave(slaves.size());
         slaves.add(slave);
     }
-    public void disableSlave(int id){
-        slaves.get(id).setAvailable(false);
+    public void disableSlave(int slaveId){
+        slaves.get(slaveId).setAvailable(false);
     }
-    public void enableSlave(int id){
-        slaves.get(id).setAvailable(true);
+    public void enableSlave(int slaveId){
+        Slave slave=slaves.get(slaveId);
+        slave.setAvailable(true);
+        ArrayList<String> fileList=slave.getFileList();
+        for(int i=0;i<fileList.size();i++){
+            String fileName=fileList.get(i);
+        
+                for (Slave slave1 : availableSlave){
+                    if (slave1.isContainFile(fileName)){
+                        String fileContent=slave1.getFileContent(fileName);
+                        slave.deleteFile(fileName);
+                        slave.createFile(fileName);
+                        slave.writeFile(fileName, fileContent);
+                    }
+                }
+            
+        }
     }
 
 

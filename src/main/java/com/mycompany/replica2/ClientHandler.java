@@ -8,8 +8,9 @@ package com.mycompany.replica2;
  *
  * @author ACER
  */
+import static com.mycompany.replica2.Server.availableSlave;
 import static com.mycompany.replica2.Server.files;
-import static com.mycompany.replica2.Server.slaves;
+import static com.mycompany.replica2.Server.numberOfReplicas;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -153,7 +154,7 @@ public class ClientHandler implements Runnable {
         fileName=fileName.substring(0, fileName.lastIndexOf('.'));
         System.out.println(fileName);
         String data = null;
-        for (Slave slave : slaves) {
+        for (Slave slave : availableSlave) {
             if (slave.isContainFile(fileName)) {
                 data = slave.getFileContent(fileName); 
                 break;
@@ -168,13 +169,13 @@ public class ClientHandler implements Runnable {
     }
 
     public void writeFile(Message wR) {
-        String message = "failed";
+        String message = "Failed";
         String fileName = wR.getFilename();
         String data = wR.getMessage();
-        for (Slave slave : slaves) {
+        for (Slave slave : availableSlave) {
             if (slave.isContainFile(fileName)) {
                 slave.writeFile(fileName, data);
-                message = "successful";
+                message = "Successful";
             }
         }
 
@@ -214,19 +215,18 @@ public class ClientHandler implements Runnable {
         String content = wR.getMessage();
         String fileName = wR.getFilename();
         List<Integer> chosen = new ArrayList<Integer>();
-        chosen.add(1);
-        chosen.add(1);
-        chosen.add(1);
-        chosen.add(1);
-        chosen.add(1);
-        for (int i = 0; i < slaves.size() - 5; i++) {
+        for(int i=0;i<numberOfReplicas;i++){
+            chosen.add(1);
+        }
+            
+        for (int i = 0; i < availableSlave.size() - numberOfReplicas; i++) {
             chosen.add(0);
         }
         Collections.shuffle(chosen);
-        for (int i = 0; i < slaves.size(); i++) {
-            if (chosen.get(i) == 1 && slaves.get(i).isAvailable()) {
-                slaves.get(i).createFile(fileName);
-                slaves.get(i).writeFile(fileName, content);
+        for (int i = 0; i < availableSlave.size(); i++) {
+            if (chosen.get(i) == 1 && availableSlave.get(i).isAvailable()) {
+                availableSlave.get(i).createFile(fileName);
+                availableSlave.get(i).writeFile(fileName, content);
             }
         }
         addToFileList(fileName);
@@ -246,9 +246,6 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public void appendStrToFile(String fileName, String str) {
-
-    }
 
     public void closeAll() {
         if (socket != null) {
