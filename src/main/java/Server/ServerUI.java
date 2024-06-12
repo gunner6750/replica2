@@ -1,0 +1,712 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
+package Server;
+
+import static Server.ClientHandler.clientHandlers;
+import Server.Server;
+import com.mycompany.replica2.Message;
+import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.ArrayList;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
+
+/**
+ *
+ * @author Duy Dinh
+ */
+public class ServerUI extends javax.swing.JFrame {
+
+    /**
+     * Creates new form ServerUI
+     */
+    ServerSocket serverSocket;
+/**
+     * Creates new form ServerUI
+     */
+    Server server=new Server();
+    ServerSocket backupServerSocket;
+    public ServerUI(int portNumber) {
+ 
+        try {
+            
+            this.serverSocket = new ServerSocket(portNumber);
+        } catch (IOException ex) {
+            Logger.getLogger(ServerUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        server=new Server(serverSocket);
+        initComponents();
+//        Vector<Integer> vector = new Vector<Integer>(server.slaves.getId());
+//        listSlaves.setListData(server.getIdList());
+
+        sStart s = new sStart();
+        s.start();
+        updateFilesList();
+        updateSlavesList();
+        setSize(700, 450);
+        jLabel1.setText("Server is running at port: "+portNumber);
+    }
+    public ServerUI(int portNumber,int backupPortNumber) {
+ 
+        try {
+            this.backupServerSocket= new ServerSocket(backupPortNumber);
+            this.serverSocket = new ServerSocket(portNumber);
+        } catch (IOException ex) {
+            Logger.getLogger(ServerUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        server=new Server(serverSocket);
+        initComponents();
+//        Vector<Integer> vector = new Vector<Integer>(server.slaves.getId());
+//        listSlaves.setListData(server.getIdList());
+
+        sStart s = new sStart();
+        s.start();
+        updateFilesList();
+        updateSlavesList();
+        setSize(700, 450);
+        jLabel1.setText("Server is running at port: "+portNumber);
+    }
+
+    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+        System.out.println("exit");
+    }
+    
+    public class sStart extends Thread {
+    public void run(){
+        server.serverStart();
+        }
+    }
+    public void showEnabledNode(){
+        DefaultListModel listModel = new DefaultListModel();
+        ArrayList<Slave> s= server.getEnabledSlaves();
+        for (int i = 0; i < s.size(); i++)
+        {
+            listModel.addElement("slave"+s.get(i).getId());
+        }
+        listSlaves.setModel(listModel);            
+    }
+    public void updateFilesList(){
+        DefaultListModel listModel = new DefaultListModel();
+        for (int i = 0; i < server.files.size(); i++)
+        {
+            listModel.addElement(server.files.get(i));
+        }
+        listFiles.setModel(listModel); 
+    }
+    public void updateSlavesList(){
+        DefaultListModel listModel = new DefaultListModel();
+        for (int i = 0; i < server.slaves.size(); i++)
+        {
+            listModel.addElement("slave"+server.slaves.get(i).getId());
+        }
+        listSlaves.setModel(listModel);        
+    }
+    public void updateSlavesListOfFile(String fileName){
+        DefaultListModel listModel = new DefaultListModel();
+        ArrayList<Slave> s= server.slavesContainFile(fileName);
+        for (int i = 0; i < s.size(); i++)
+        {
+            listModel.addElement("slave"+s.get(i).getId());
+        }
+        fileLocation.setModel(listModel);        
+    }
+    public void updateFilesListOfSlave(int slaveId){
+        DefaultListModel listModel = new DefaultListModel();
+        ArrayList<String> s = server.getFileListOfSlave(slaveId);
+        for (int i = 0; i < s.size(); i++)
+        {
+            listModel.addElement(s.get(i));
+        }
+        contain.setModel(listModel); 
+    }
+    public void showPropertyOfSlave(int slaveId){
+        Id.setText("Slave id:"+slaveId);
+        updateFilesListOfSlave(slaveId);
+        numberOfFiles.setText("Number of File: "+server.getNumberOfFileOfSlave(slaveId));
+        String status;
+        if(server.isAvailable(slaveId)) status="alive";
+                else status="dead";
+        slaveStatus.setText("Status:"+status);
+    }
+    public void showPropertyOfFile(String fileName1){
+        fileName.setText("File name:           "+fileName1+".txt");
+        updateSlavesListOfFile(fileName1);
+        
+    }
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        readFrame = new javax.swing.JFrame();
+        jPanel1 = new javax.swing.JPanel();
+        fileNameLabel = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        fileContent = new javax.swing.JTextArea();
+        jLabel7 = new javax.swing.JLabel();
+        locationReadFrame = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        listFiles = new javax.swing.JList<>();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        listSlaves = new javax.swing.JList<>();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        fileName = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        readFile = new javax.swing.JButton();
+        location = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        fileLocation = new javax.swing.JList<>();
+        slaveStatus = new javax.swing.JLabel();
+        numberOfFiles = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        contain = new javax.swing.JList<>();
+        enable = new javax.swing.JButton();
+        disable = new javax.swing.JButton();
+        showEnableNode = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
+        jLabel6 = new javax.swing.JLabel();
+        Id = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jButton3 = new javax.swing.JButton();
+
+        readFrame.setTitle("read file\n");
+        readFrame.setAlwaysOnTop(true);
+        readFrame.setResizable(false);
+
+        fileNameLabel.setText("Content of file:");
+
+        fileContent.setColumns(20);
+        fileContent.setRows(5);
+        jScrollPane5.setViewportView(fileContent);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
+        );
+
+        jLabel7.setText("at slave node:");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(fileNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(locationReadFrame, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(locationReadFrame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(fileNameLabel)
+                        .addComponent(jLabel7)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout readFrameLayout = new javax.swing.GroupLayout(readFrame.getContentPane());
+        readFrame.getContentPane().setLayout(readFrameLayout);
+        readFrameLayout.setHorizontalGroup(
+            readFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        readFrameLayout.setVerticalGroup(
+            readFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                function(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel1.setText("Server is running at port ");
+
+        listFiles.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        listFiles.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listFilesMouseClicked(evt);
+            }
+        });
+        listFiles.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                listFilesValueChanged(evt);
+            }
+        });
+        jScrollPane1.setViewportView(listFiles);
+
+        listSlaves.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        listSlaves.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listSlavesMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(listSlaves);
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel2.setText("List of Files");
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel3.setText("List of Slaves");
+
+        fileName.setText("File name: ");
+
+        jLabel5.setText("Properties");
+
+        readFile.setText("ReadFile");
+        readFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                readFileActionPerformed(evt);
+            }
+        });
+
+        location.setText("Location:");
+
+        jScrollPane3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
+        jScrollPane3.setViewportView(fileLocation);
+
+        slaveStatus.setText("Status:");
+
+        numberOfFiles.setText("Number of File: ");
+
+        jLabel13.setText("List of File:");
+
+        jScrollPane4.setViewportView(contain);
+
+        enable.setText("Enbale");
+        enable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableActionPerformed(evt);
+            }
+        });
+
+        disable.setText("Disable");
+        disable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                disableActionPerformed(evt);
+            }
+        });
+
+        showEnableNode.setText("Show enable nodes");
+        showEnableNode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showEnableNodeActionPerformed(evt);
+            }
+        });
+
+        jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
+
+        jLabel6.setText("Properties");
+
+        Id.setText("Slave id:");
+
+        jButton2.setText("Refresh");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Refresh");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("number of replicas when create file:");
+
+        jTextField1.setText("5");
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("commit");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(75, 75, 75)
+                                        .addComponent(jLabel5))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(location, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(23, 23, 23)
+                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(fileName, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jButton2)
+                                        .addGap(31, 31, 31)
+                                        .addComponent(readFile)))
+                                .addGap(48, 48, 48))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(47, 47, 47)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(jLabel1)
+                        .addGap(144, 144, 144)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(enable)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(disable)
+                                .addContainerGap(480, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(11, 11, 11)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(layout.createSequentialGroup()
+                                                        .addGap(44, 44, 44)
+                                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                    .addGroup(layout.createSequentialGroup()
+                                                        .addGap(12, 12, 12)
+                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                            .addComponent(slaveStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                            .addComponent(numberOfFiles, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                            .addGroup(layout.createSequentialGroup()
+                                                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                            .addComponent(Id, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(98, 98, 98)
+                                                .addComponent(jLabel6))))
+                                    .addComponent(showEnableNode))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3)
+                        .addGap(0, 406, Short.MAX_VALUE))))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton3))
+                .addGap(8, 8, 8)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(fileName)
+                        .addGap(24, 24, 24)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(location)
+                                .addGap(46, 46, 46)
+                                .addComponent(jLabel8)
+                                .addGap(0, 56, Short.MAX_VALUE))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addGap(96, 96, 96)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton2)
+                            .addComponent(readFile))
+                        .addGap(30, 30, 30))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel6)
+                                        .addGap(12, 12, 12)
+                                        .addComponent(Id)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                                        .addComponent(numberOfFiles)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(slaveStatus)
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel13)
+                                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(54, 54, 54))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(26, 26, 26)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jButton1)
+                                            .addComponent(enable)
+                                            .addComponent(disable))))
+                                .addComponent(showEnableNode))
+                            .addComponent(jSeparator1))
+                        .addContainerGap())))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void showEnableNodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showEnableNodeActionPerformed
+        // TODO add your handling code here:
+        showEnabledNode();
+    }//GEN-LAST:event_showEnableNodeActionPerformed
+
+    private void listSlavesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listSlavesMouseClicked
+        // TODO add your handling code here:
+        int slaveId= getSlaveId();
+        showPropertyOfSlave(slaveId);
+    }//GEN-LAST:event_listSlavesMouseClicked
+
+    private void listFilesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listFilesValueChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_listFilesValueChanged
+
+    private void listFilesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listFilesMouseClicked
+        // TODO add your handling code here:        
+        String fileName1=listFiles.getSelectedValue();
+        fileName1=fileName1.substring(0, fileName1.lastIndexOf('.'));
+        showPropertyOfFile(fileName1);
+    }//GEN-LAST:event_listFilesMouseClicked
+
+    private void readFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_readFileActionPerformed
+        // TODO add your handling code here:
+
+        String slaveName=fileLocation.getSelectedValue();
+        String fileName=listFiles.getSelectedValue();
+        if(slaveName==null || fileName==null) return;
+        slaveName=slaveName.replace("slave", "");
+        
+        int slaveId=Integer.valueOf(slaveName);
+        locationReadFrame.setText(slaveName);
+        
+        
+        readFrame.setVisible(true);
+        readFrame.setSize(400,300);
+        try {
+            fileContent.setText(server.readFile(fileName,slaveId));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ServerUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        fileNameLabel.setText("Content of file:"+fileName);
+    }//GEN-LAST:event_readFileActionPerformed
+    private int getSlaveId(){
+        String slaveName=listSlaves.getSelectedValue();
+        slaveName=slaveName.replace("slave", "");
+        System.out.println("slaveiD: "+slaveName);
+        return Integer.valueOf(slaveName);
+        
+    }
+    private void enableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableActionPerformed
+        // TODO add your handling code here:
+        int slaveId= getSlaveId();
+        server.enableSlave(slaveId);
+        String status;
+        if(server.isAvailable(slaveId)) status="alive";
+        else status="dead";
+        slaveStatus.setText("Status:"+status);
+    }//GEN-LAST:event_enableActionPerformed
+
+    private void disableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disableActionPerformed
+        // TODO add your handling code here:
+        int slaveId= getSlaveId();
+        server.disableSlave(slaveId);
+        String status;
+        if(server.isAvailable(slaveId)) status="alive";
+        else status="dead";
+        slaveStatus.setText("Status:"+status);
+    }//GEN-LAST:event_disableActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        updateFilesList();
+        listFiles.clearSelection();
+        fileName.setText("File name:");
+        fileLocation.removeAll();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        updateSlavesList();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        server.numberOfReplicas=Integer.parseInt(jTextField1.getText());
+    }//GEN-LAST:event_jButton3ActionPerformed
+    public void broadcast(Message wR) {
+        for (ClientHandler clientHandler : clientHandlers) {
+            try {
+
+                System.out.println("broadcasting");
+                clientHandler.send(wR);
+
+            } catch (IOException e) {
+
+            }
+        }
+    }
+    private void function(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_function
+        // TODO add your handling code here:
+        System.out.println("exit");
+        
+        broadcast(new Message(String.valueOf(backupServerSocket),"Close"));
+    }//GEN-LAST:event_function
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(ServerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(ServerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(ServerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ServerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new ServerUI(8089).setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Id;
+    private javax.swing.JList<String> contain;
+    private javax.swing.JButton disable;
+    private javax.swing.JButton enable;
+    private javax.swing.JTextArea fileContent;
+    private javax.swing.JList<String> fileLocation;
+    private javax.swing.JLabel fileName;
+    private javax.swing.JLabel fileNameLabel;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JList<String> listFiles;
+    private javax.swing.JList<String> listSlaves;
+    private javax.swing.JLabel location;
+    private javax.swing.JLabel locationReadFrame;
+    private javax.swing.JLabel numberOfFiles;
+    private javax.swing.JButton readFile;
+    private javax.swing.JFrame readFrame;
+    private javax.swing.JButton showEnableNode;
+    private javax.swing.JLabel slaveStatus;
+    // End of variables declaration//GEN-END:variables
+}
