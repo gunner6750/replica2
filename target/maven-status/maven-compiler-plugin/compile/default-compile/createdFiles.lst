@@ -21,6 +21,7 @@ Client\ClientUI$1.class
 Client\ClientUI$10.class
 Server\ServerUI$9.class
 Client\Login$4.class
+Server\ServerUI$17.class
 Server\ServerUI1$2.class
 Server\ServerUI$4.class
 Server\ServerUI.class
@@ -38,6 +39,7 @@ Client\ClientUI$8.class
 Server\Server.class
 Server\ServerUI$6.class
 Server\ServerUI$10.class
+Server\ServerUI$16.class
 Server\ServerUI1$3.class
 Server\ServerUI$5.class
 com\mycompany\replica2\Message.class

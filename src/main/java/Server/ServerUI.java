@@ -31,8 +31,9 @@ public class ServerUI extends javax.swing.JFrame {
 /**
      * Creates new form ServerUI
      */
+    public boolean status=true;
     Server server=new Server();
-    ServerSocket backupServerSocket;
+    int backupServerSocket=8070;
     public ServerUI(int portNumber) {
  
         try {
@@ -56,7 +57,7 @@ public class ServerUI extends javax.swing.JFrame {
     public ServerUI(int portNumber,int backupPortNumber) {
  
         try {
-            this.backupServerSocket= new ServerSocket(backupPortNumber);
+            this.backupServerSocket=backupPortNumber;
             this.serverSocket = new ServerSocket(portNumber);
         } catch (IOException ex) {
             Logger.getLogger(ServerUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -74,9 +75,6 @@ public class ServerUI extends javax.swing.JFrame {
         jLabel1.setText("Server is running at port: "+portNumber);
     }
 
-    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-        System.out.println("exit");
-    }
     
     public class sStart extends Thread {
     public void run(){
@@ -187,6 +185,7 @@ public class ServerUI extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         readFrame.setTitle("read file\n");
         readFrame.setAlwaysOnTop(true);
@@ -376,6 +375,14 @@ public class ServerUI extends javax.swing.JFrame {
             }
         });
 
+        jButton4.setForeground(new java.awt.Color(255, 51, 51));
+        jButton4.setText("turn off");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -408,10 +415,12 @@ public class ServerUI extends javax.swing.JFrame {
                                 .addGap(47, 47, 47)
                                 .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel1)
-                        .addGap(144, 144, 144)))
+                        .addGap(70, 70, 70)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -423,7 +432,7 @@ public class ServerUI extends javax.swing.JFrame {
                                 .addComponent(enable)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(disable)
-                                .addContainerGap(480, Short.MAX_VALUE))
+                                .addContainerGap(479, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -456,7 +465,7 @@ public class ServerUI extends javax.swing.JFrame {
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)
-                        .addGap(0, 406, Short.MAX_VALUE))))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -466,7 +475,8 @@ public class ServerUI extends javax.swing.JFrame {
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3))
+                    .addComponent(jButton3)
+                    .addComponent(jButton4))
                 .addGap(8, 8, 8)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -631,9 +641,27 @@ public class ServerUI extends javax.swing.JFrame {
     private void function(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_function
         // TODO add your handling code here:
         System.out.println("exit");
+        status=false;
+        //
         
-        broadcast(new Message(String.valueOf(backupServerSocket),"Close"));
+        
+        
     }//GEN-LAST:event_function
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        status=false;
+        broadcast(new Message(String.valueOf(backupServerSocket),"Close"));
+        this.dispose();
+        
+        
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new ServerUI(backupServerSocket).setVisible(false);
+            }
+        });
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -681,6 +709,7 @@ public class ServerUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;

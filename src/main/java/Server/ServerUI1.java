@@ -15,6 +15,7 @@ public class ServerUI1 extends javax.swing.JFrame {
     /**
      * Creates new form ServerUI1
      */
+    boolean status1;
     public ServerUI1() {
         initComponents();
     }
@@ -130,12 +131,19 @@ public class ServerUI1 extends javax.swing.JFrame {
         int portNumber=Integer.parseInt(port.getText());
         
         int backupPortNumber=Integer.parseInt(backup.getText());
+        this.setVisible(false);
         java.awt.EventQueue.invokeLater(new Runnable() {
+            
             public void run() {
-                new ServerUI(portNumber,backupPortNumber).setVisible(true);
+                ServerUI ui=new ServerUI(portNumber,backupPortNumber);
+                ui.setVisible(true);
+                if(ui.status==false){
+                    new ServerUI(backupPortNumber).setVisible(true);
+                }
             }
         });
-        this.dispose();
+        
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

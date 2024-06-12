@@ -5,6 +5,7 @@
 package Client;
 
 
+import Client.Client;
 import com.mycompany.replica2.Message;
 import java.io.IOException;
 import java.net.Socket;
@@ -25,10 +26,14 @@ public class ClientUI extends javax.swing.JFrame {
 //    public ClientUI() {
 //        initComponents();
 //    }
+    private String name;
+    private String host;
     private Client client;
     public ClientUI(String name,int portNumber,String host) {
         initComponents();
         try {
+            this.name=name;
+            this.host=host;
             Socket socket = new Socket(host, portNumber);
             this.client = new Client(socket, name);
             clientName.setText(name);
@@ -48,9 +53,28 @@ public class ClientUI extends javax.swing.JFrame {
                 try {
                     m=client.receive();
                     client.requestHandler(m);
+                    if(!client.serverStatus){
+                        int portNumber=client.getBackupSocket();
+                        Socket socket;
+                        Thread.sleep(1000);
+                        client.serverStatus=true;
+                                
+                        
+            
+                        socket = new Socket(host, portNumber);
+                        client=new Client(socket, name);
+                        jLabel5.setText("port number:"+portNumber);
+                    }
                 } catch (IOException ex) {
+                    
                     Logger.getLogger(ClientUI.class.getName()).log(Level.SEVERE, null, ex);
-                    break;
+                    
+                        
+                     
+                    
+                    
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(ClientUI.class.getName()).log(Level.SEVERE, null, ex);
                 } 
             
             }

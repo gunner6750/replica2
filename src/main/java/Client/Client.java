@@ -22,11 +22,13 @@ import java.util.logging.Logger;
  */
 public class Client {
     public static ArrayList<String> files=new ArrayList<>();
+    public boolean serverStatus=true;
     public Socket socket;
     public ObjectOutputStream out = null;
     public ObjectInputStream in = null;
     public String name;
     public String fileContent;
+    private int backupSocket;
     public Client(Socket socket, String name) throws IOException {
         this.socket = socket;
         this.name = name;
@@ -41,6 +43,7 @@ public class Client {
 
         } else {
             switch (wR.getMethod()) {
+                
                 case "FileList":
                     receiveFileListRequest(wR);
                     break;
@@ -54,7 +57,9 @@ public class Client {
                     receivePostRequest(wR);
                     break;
                 case "Close":
+                    receiveCloseRequest(wR);
                     break;
+                
                 default:
 
                     break;
@@ -65,6 +70,7 @@ public class Client {
         Message wR = new Message();
         try {
             wR = (Message) in.readObject();
+            System.out.println(wR.getMessage());
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
@@ -72,6 +78,15 @@ public class Client {
         }
         System.out.println("message received");
         return wR;
+    }
+    public void receiveCloseRequest(Message wR){
+        serverStatus=false;
+        int portNumber=Integer.parseInt(wR.getMessage());
+        backupSocket=portNumber;
+    }
+
+    public int getBackupSocket() {
+        return backupSocket;
     }
     public void send(Message wR) throws IOException {
         out.writeObject(wR);
